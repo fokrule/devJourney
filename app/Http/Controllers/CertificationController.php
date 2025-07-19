@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Certification;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 
 class CertificationController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         return Inertia::render('Certifications/Index', [
