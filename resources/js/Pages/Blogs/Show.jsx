@@ -1,5 +1,6 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import ReactMarkdown from 'react-markdown';
 
 export default function Show({ blog }) {

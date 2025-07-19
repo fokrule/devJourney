@@ -40,7 +40,7 @@ export default function Index({ blogs }) {
                                             </p>
                                         </div>
                                         <div className="flex space-x-2">
-                                            <a href={route('blogs.show', blog.id)} target="_blank" className="px-3 py-1 text-sm font-medium text-green-600 hover:text-green-900">View</a>
+                                            <Link href={route('blogs.show', blog.slug)} className="px-3 py-1 text-sm font-medium text-green-600 hover:text-green-900">View</Link>
                                             <Link href={route('blogs.edit', blog.id)} className="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-900">Edit</Link>
                                             <button onClick={() => handleDelete(blog.id)} className="px-3 py-1 text-sm font-medium text-red-600 hover:text-red-900">Delete</button>
                                         </div>
