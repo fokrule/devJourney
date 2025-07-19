@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response; // <-- Make sure Response is imported
 
 class BlogController extends Controller
 {
@@ -29,6 +30,17 @@ class BlogController extends Controller
         auth()->user()->blogs()->create($request->only('title', 'content'));
 
         return redirect()->route('blogs.index')->with('success', 'Blog created!');
+    }
+
+    /**
+     * Display the specified resource.
+     * ADD THIS ENTIRE METHOD
+     */
+    public function show(Blog $blog): Response
+    {
+        return Inertia::render('Blogs/Show', [
+            'blog' => $blog
+        ]);
     }
 
     public function edit(Blog $blog)

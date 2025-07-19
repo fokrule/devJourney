@@ -1,45 +1,41 @@
-import React from 'react'
-import { useForm } from '@inertiajs/react'
+import React from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import { Button, Input, Label, Textarea } from '@/Components/FormElements';
 
 export default function Edit({ blog }) {
-  const { data, setData, put, processing, errors } = useForm({
-    title: blog.title,
-    content: blog.content
-  })
+    const { data, setData, put, processing, errors } = useForm({
+        title: blog.title || '',
+        content: blog.content || '',
+    });
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    put(`/blogs/${blog.id}`)
-  }
+    const submit = (e) => {
+        e.preventDefault();
+        put(route('blogs.update', blog.id));
+    };
 
-  return (
-    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-4">
-      <h1 className="text-xl font-bold">Edit Blog</h1>
-
-      <div>
-        <label>Title</label>
-        <input
-          value={data.title}
-          onChange={e => setData('title', e.target.value)}
-          className="w-full border p-2 rounded"
-        />
-        {errors.title && <p className="text-red-500">{errors.title}</p>}
-      </div>
-
-      <div>
-        <label>Content (Markdown supported)</label>
-        <textarea
-          value={data.content}
-          onChange={e => setData('content', e.target.value)}
-          rows="10"
-          className="w-full border p-2 rounded font-mono"
-        />
-        {errors.content && <p className="text-red-500">{errors.content}</p>}
-      </div>
-
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded" disabled={processing}>
-        Update
-      </button>
-    </form>
-  )
+    return (
+        <>
+            <Head title="Edit Post" />
+            <div className="py-12">
+                <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <h1 className="text-2xl font-semibold mb-6">Edit Post</h1>
+                        <form onSubmit={submit}>
+                            <div className="mb-4">
+                                <Label htmlFor="title">Title</Label>
+                                <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} error={errors.title} />
+                            </div>
+                            <div className="mb-4">
+                                <Label htmlFor="content">Content (Markdown supported)</Label>
+                                <Textarea id="content" value={data.content} onChange={(e) => setData('content', e.target.value)} error={errors.content} rows={15} />
+                            </div>
+                            <div className="mt-6">
+                                <Button type="submit" disabled={processing}>Save Changes</Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
 }
