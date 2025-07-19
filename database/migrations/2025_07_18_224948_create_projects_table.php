@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description');
+            $table->string('status')->default('In Progress'); // To track if completed
             $table->string('tech_stack')->nullable();
             $table->string('github_url')->nullable();
             $table->string('demo_url')->nullable();

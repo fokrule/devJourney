@@ -1,22 +1,20 @@
-import React from 'react'
-import { usePage } from '@inertiajs/react'
+import React from 'react';
+import AppLayout from '@/Layouts/AppLayout';
+import { Head, Link } from '@inertiajs/react';
 
-export default function Dashboard() {
-  const { auth } = usePage().props
-  const username = auth.user.name
-
-  return (
-    <div className="max-w-4xl mx-auto py-10 space-y-4">
-      <h1 className="text-2xl font-bold">Welcome, {username}</h1>
-
-      <a
-        href={`/profile/${username}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
-      >
-        🔗 View Public Profile
-      </a>
-    </div>
-  )
+export default function Dashboard({ auth }) {
+    return (
+        <>
+            <Head title="Dashboard" />
+            <AppLayout auth={auth}>
+                <h1 className="text-3xl font-bold mb-4">Welcome, {auth.user.name}</h1>
+                <Link
+                    href={route('profile.show')}
+                    className="text-blue-600 hover:underline"
+                >
+                    ➤ View Public Profile
+                </Link>
+            </AppLayout>
+        </>
+    );
 }

@@ -1,10 +1,23 @@
 <?php
 
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CertificationController;
+use App\Http\Controllers\EndorsementController;
+use App\Http\Controllers\GoalController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PublicProfileController;
+use App\Http\Controllers\SkillController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\ProjectController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// Public Routes
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -14,54 +27,23 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
+Route::get('/profile/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
+
+
+// Authenticated Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Dashboard
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-});
 
-
-Route::middleware(['auth', 'verified'])->group(function () {
+    // Resource Controllers
     Route::resource('projects', ProjectController::class);
-});
-
-use App\Http\Controllers\SkillController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('skills', SkillController::class);
-});
-
-use App\Http\Controllers\BlogController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('blogs', BlogController::class);
-});
-
-use App\Http\Controllers\GoalController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('goals', GoalController::class);
-});
-
-
-use App\Http\Controllers\CertificationController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('certifications', CertificationController::class);
+    
+    // Endorsements typically don't need edit/update pages
+    Route::resource('endorsements', EndorsementController::class)->only(['index', 'store', 'destroy']);
 });
-
-
-use App\Http\Controllers\EndorsementController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('endorsements', EndorsementController::class);
-});
-
-
-use App\Http\Controllers\PublicProfileController;
-
-Route::get('/profile/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
