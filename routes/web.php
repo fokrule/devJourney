@@ -27,7 +27,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/profile/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
+Route::get('/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
 
 
 // Authenticated Routes

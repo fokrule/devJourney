@@ -5,54 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\Goal;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class GoalController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         return Inertia::render('Goals/Index', [
-            'goals' => Goal::where('user_id', auth()->id())->get()
+            'goals' => Goal::where('user_id', auth()->id())->orderBy('created_at', 'desc')->get()
         ]);
-    }
-
-    public function create()
-    {
-        return Inertia::render('Goals/Create');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'details' => 'nullable|string',
-            'status' => 'required|in:planned,in_progress,done'
         ]);
 
-        auth()->user()->goals()->create($request->all());
+        auth()->user()->goals()->create(array_merge($validated, ['status' => 'planned']));
 
         return redirect()->route('goals.index')->with('success', 'Goal added!');
-    }
-
-    public function edit(Goal $goal)
-    {
-        $this->authorize('update', $goal);
-        return Inertia::render('Goals/Edit', ['goal' => $goal]);
     }
 
     public function update(Request $request, Goal $goal)
     {
         $this->authorize('update', $goal);
 
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'details' => 'nullable|string',
+        $validated = $request->validate([
             'status' => 'required|in:planned,in_progress,done'
         ]);
 
-        $goal->update($request->all());
+        $goal->update($validated);
 
-        return redirect()->route('goals.index')->with('success', 'Goal updated!');
+        // THE FIX IS HERE: Return back instead of redirecting to the index route.
+        return back();
     }
 
     public function destroy(Goal $goal)

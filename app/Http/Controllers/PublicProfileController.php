@@ -5,23 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PublicProfileController extends Controller
 {
-    public function show($username)
+    public function show(string $username): Response
     {
-        $user = User::where('name', $username)->firstOrFail();
+        $user = User::where('username', $username)->firstOrFail();
 
         return Inertia::render('PublicProfile/Show', [
-            'user' => [
-                'name' => $user->name,
-                'email' => $user->email
-            ],
-            'skills' => $user->skills()->select('name', 'level')->get(),
-            'projects' => $user->projects()->select('title', 'description', 'github_url', 'demo_url')->get(),
-            'blogs' => $user->blogs()->select('title', 'content')->latest()->take(3)->get(),
-            'certifications' => $user->certifications()->select('title', 'issuer', 'issued_on', 'certificate_url')->get(),
-            'endorsements' => $user->endorsements()->with('endorser:id,name')->latest()->get()
+            'profileUser' => $user->only(
+                'id', 'name', 'username', 'bio', 'profile_photo_url', 'github_handle', 'linkedin_url'
+            ),
+            'skills' => $user->skills()->orderBy('level', 'desc')->get(),
+            'projects' => $user->projects()->where('status', 'Completed')->latest()->get(),
+            'blogs' => $user->blogs()->latest()->take(3)->get(),
+            'certifications' => $user->certifications()->orderBy('issued_on', 'desc')->get(),
+            'goals' => $user->goals()->whereIn('status', ['in_progress', 'done'])->get(),
         ]);
     }
 }
