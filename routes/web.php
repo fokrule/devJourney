@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CertificationController;
-use App\Http\Controllers\EndorsementController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,33 +17,30 @@ use Inertia\Inertia;
 |--------------------------------------------------------------------------
 */
 
-// Public Routes
+// Define specific routes like the homepage first.
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
     ]);
 });
 
-Route::get('/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
-
-
-// Authenticated Routes
+// Group all authenticated routes together.
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    // Resource Controllers
+    // Your resource routes
     Route::resource('projects', ProjectController::class);
     Route::resource('skills', SkillController::class);
     Route::resource('blogs', BlogController::class);
     Route::resource('goals', GoalController::class);
     Route::resource('certifications', CertificationController::class);
     
-    // Endorsements typically don't need edit/update pages
-    Route::resource('endorsements', EndorsementController::class)->only(['index', 'store', 'destroy']);
+    // Custom profile update route
+    Route::put('/user/custom-profile-information', [UserProfileController::class, 'update'])->name('user-profile-information.update');
 });
+
+// Place the catch-all public profile route at the very end.
+Route::get('/{username}', [PublicProfileController::class, 'show'])->name('public.profile');
