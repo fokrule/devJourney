@@ -30,7 +30,7 @@ To get DevJourney up and running on your local machine, follow these simple step
 1.  Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/devjourney.git
+    git clone git@github.com:fokrule/devJourney.git
     ```
 
 2.  Navigate to the project directory:
